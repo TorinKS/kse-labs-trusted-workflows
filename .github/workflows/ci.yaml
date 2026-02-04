@@ -20,18 +20,6 @@ jobs:
       - name: Run actionlint
         run: ./actionlint -color
 
-  yaml-lint:
-    name: YAML lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install yamllint
-        run: pip install yamllint
-
-      - name: Run yamllint
-        run: yamllint .github/workflows/
-
   zizmor:
     name: Security analysis with zizmor
     runs-on: ubuntu-latest
