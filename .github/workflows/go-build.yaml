@@ -62,9 +62,9 @@ jobs:
         id: image
         run: |
           if [ -n "${{ inputs.image-name }}" ]; then
-            echo "name=${{ inputs.image-name }}" >> $GITHUB_OUTPUT
+            echo "name=${{ inputs.image-name }}" >> "$GITHUB_OUTPUT"
           else
-            echo "name=$(basename ${{ inputs.working-directory }})" >> $GITHUB_OUTPUT
+            echo "name=$(basename "${{ inputs.working-directory }}")" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Set up Docker Buildx
