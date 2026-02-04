@@ -1,0 +1,41 @@
+name: Go Release
+
+on:
+  workflow_call:
+    inputs:
+      go-version:
+        description: 'Go version to use'
+        required: false
+        type: string
+        default: '1.21'
+      working-directory:
+        description: 'Directory containing Go code'
+        required: true
+        type: string
+      binary-name:
+        description: 'Name of the binary'
+        required: false
+        type: string
+        default: 'app'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, darwin, windows]
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and upload release
+        uses: wangyoucao577/go-release-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          goversion: ${{ inputs.go-version }}
+          project_path: ${{ inputs.working-directory }}
+          binary_name: ${{ inputs.binary-name }}
+          md5sum: false
+          sha256sum: true
