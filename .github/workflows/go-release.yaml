@@ -17,14 +17,20 @@ on:
         required: false
         type: string
         default: 'app'
+      goos:
+        description: 'Target OS (linux, darwin, windows)'
+        required: false
+        type: string
+        default: 'linux'
+      goarch:
+        description: 'Target architecture (amd64, arm64)'
+        required: false
+        type: string
+        default: 'amd64'
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        goos: [linux, darwin, windows]
-        goarch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v4
 
@@ -32,8 +38,8 @@ jobs:
         uses: wangyoucao577/go-release-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
+          goos: ${{ inputs.goos }}
+          goarch: ${{ inputs.goarch }}
           goversion: ${{ inputs.go-version }}
           project_path: ${{ inputs.working-directory }}
           binary_name: ${{ inputs.binary-name }}
