@@ -18,10 +18,10 @@ on:
         type: string
         default: ''
       image-name:
-        description: 'Docker image name'
+        description: 'Docker image name (defaults to last directory in working-directory)'
         required: false
         type: string
-        default: 'app'
+        default: ''
       build-docker:
         description: 'Whether to build Docker image'
         required: false
@@ -58,6 +58,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Derive image name
+        id: image
+        run: |
+          if [ -n "${{ inputs.image-name }}" ]; then
+            echo "name=${{ inputs.image-name }}" >> $GITHUB_OUTPUT
+          else
+            echo "name=$(basename ${{ inputs.working-directory }})" >> $GITHUB_OUTPUT
+          fi
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -66,4 +75,4 @@ jobs:
         with:
           context: ${{ inputs.docker-context != '' && inputs.docker-context || inputs.working-directory }}
           push: false
-          tags: ${{ inputs.image-name }}:${{ github.sha }}
+          tags: ${{ steps.image.outputs.name }}:${{ github.sha }}
