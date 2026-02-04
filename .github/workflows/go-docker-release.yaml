@@ -77,6 +77,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Generate image tags
+        id: tags
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE=$(echo "${{ inputs.image-name }}" | tr '[:upper:]' '[:lower:]')
+          echo "image=${{ inputs.registry }}/${OWNER}/${IMAGE}" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -84,8 +91,8 @@ jobs:
           file: ${{ inputs.working-directory }}/Dockerfile
           push: true
           tags: |
-            ${{ inputs.registry }}/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ inputs.release-tag }}
-            ${{ inputs.registry }}/${{ github.repository_owner }}/${{ inputs.image-name }}:latest
+            ${{ steps.tags.outputs.image }}:${{ inputs.release-tag }}
+            ${{ steps.tags.outputs.image }}:latest
           build-args: |
             BINARY_PATH=${{ inputs.binary-name }}
           cache-from: type=gha
