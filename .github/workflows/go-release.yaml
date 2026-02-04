@@ -32,6 +32,10 @@ on:
         required: false
         type: string
         default: ''
+      release-tag:
+        description: 'Release tag for uploading assets'
+        required: true
+        type: string
 
 jobs:
   release:
@@ -50,5 +54,6 @@ jobs:
           goversion: ${{ inputs.go-version }}
           project_path: ${{ inputs.working-directory }}
           binary_name: ${{ inputs.binary-name }}
+          release_tag: ${{ inputs.release-tag }}
           md5sum: false
           sha256sum: true
